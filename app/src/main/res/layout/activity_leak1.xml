@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <Button
+        android:id="@+id/al1_finish_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击模拟Handler内存泄露:结束当前页面，handler延时10秒执行runnable"/>
+</LinearLayout>
