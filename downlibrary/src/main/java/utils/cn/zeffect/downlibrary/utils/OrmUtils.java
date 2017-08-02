@@ -38,10 +38,7 @@ public class OrmUtils {
      * @param pContext 上下文
      */
     public static void defaultInit(Context pContext) {
-        if (pContext != null) {
-            DataBaseConfig defaultConfig = new DataBaseConfig(pContext, pContext.getPackageName());
-            liteOrm = LiteOrm.newSingleInstance(defaultConfig);
-        }
+        defaultInit(pContext, pContext.getPackageName());
     }
 
     /***
@@ -52,7 +49,8 @@ public class OrmUtils {
      */
     public static void defaultInit(Context pContext, String dbName) {
         if (pContext != null) {
-            liteOrm = LiteOrm.newSingleInstance(pContext, dbName);
+            DataBaseConfig defaultConfig = new DataBaseConfig(pContext, dbName);
+            liteOrm = LiteOrm.newSingleInstance(defaultConfig);
         }
     }
 }
