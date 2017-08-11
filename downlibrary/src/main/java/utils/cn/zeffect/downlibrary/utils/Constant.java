@@ -13,9 +13,11 @@ package utils.cn.zeffect.downlibrary.utils;
  */
 
 public class Constant {
+
     public static final String TABLE_NAME_BLOCK = "block";
     public static final String START_ACTION = "start_action";
     public static final String PAUSE_ACTION = "pause_action";
+    public static final String DELETE_ACTION = "delete_action";
     public static final String TABLE_NAME_TASK = "task";
     public static final String DIR_NAME = "down";
     public static final String ID_KEY = "id";

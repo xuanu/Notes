@@ -22,7 +22,7 @@ import utils.cn.zeffect.downlibrary.interfaces.DownListener;
 import utils.cn.zeffect.downlibrary.interfaces.ListenerUtils;
 import utils.cn.zeffect.downlibrary.utils.Constant;
 import utils.cn.zeffect.downlibrary.utils.NetUtils;
-import utils.cn.zeffect.downlibrary.utils.OrmUtils;
+import utils.cn.zeffect.downlibrary.orm.OrmUtils;
 import utils.cn.zeffect.downlibrary.utils.WeakHandler;
 
 /**

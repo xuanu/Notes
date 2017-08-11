@@ -30,6 +30,11 @@ import utils.cn.zeffect.downlibrary.utils.Constant;
  */
 @Table(Constant.TABLE_NAME_TASK)
 public class Task implements Serializable {
+    public static final String COL_RECORD_STATUS = "record_status";
+    /***
+     * 下载记录应该会有三种状态。第一种显示下载进度，第二种不显示下载进度，第三种用户已经删除了。
+     */
+    public static final int COL_RECORD_STATUS_VISIBLE_0 = 0, COL_RECORD_STATUS_INVISIBLE_1 = 1, COL_RECORD_STATUS_HIDE_2 = 2;
     public static final int STATU_FAILE = 4, STATU_SUCCESS = 3, STATU_ING = 2, STATU_PAUSE = 1, STATU_NORMAL = 0;
     public static final int IS_MOBILE_DOWN = 0, IS_WIFI_DOWN = 1;
     private int id;
@@ -48,6 +53,17 @@ public class Task implements Serializable {
      * 值为1，表示WIFI时才下载，值为0流量也下载。其它都不下载
      */
     private int wifidown;
+    @Column(COL_RECORD_STATUS)
+    private int record_status;
+
+    public int getRecord_status() {
+        return record_status;
+    }
+
+    public Task setRecord_status(int pRecord_status) {
+        record_status = pRecord_status;
+        return this;
+    }
 
     public String getBlocksString() {
         return blocksString;

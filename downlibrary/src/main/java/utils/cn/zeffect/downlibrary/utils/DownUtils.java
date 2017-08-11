@@ -5,13 +5,18 @@ import android.content.Intent;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import com.litesuits.orm.db.assit.QueryBuilder;
+
 import java.io.File;
+import java.net.IDN;
+import java.util.List;
 import java.util.UUID;
 
 import utils.cn.zeffect.downlibrary.DownService;
 import utils.cn.zeffect.downlibrary.bean.Task;
 import utils.cn.zeffect.downlibrary.interfaces.DownListener;
 import utils.cn.zeffect.downlibrary.interfaces.ListenerUtils;
+import utils.cn.zeffect.downlibrary.orm.OrmUtils;
 
 /**
  * <pre>
@@ -70,4 +75,31 @@ public class DownUtils {
         if (TextUtils.isEmpty(url)) return;
         pContext.startService(new Intent(pContext, DownService.class).setAction(Constant.PAUSE_ACTION).putExtra(Constant.CONTENT_KEY, url));
     }
+
+
+    public static void deleteTask(Context pContext, String url) {
+        if (pContext == null) throw new NullPointerException("context null");
+        if (TextUtils.isEmpty(url)) return;
+        pContext.startService(new Intent(pContext, DownService.class).setAction(Constant.DELETE_ACTION).putExtra(Constant.CONTENT_KEY, url));
+    }
+
+    public static Task queryTask(int id) {
+        List<Task> tempTasks = OrmUtils.getLiteOrm().query(new QueryBuilder<Task>(Task.class).whereEquals(Constant.ID_KEY, id));
+        if (tempTasks != null && !tempTasks.isEmpty()) {
+            return tempTasks.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public static Task queryTask(String url) {
+        if (TextUtils.isEmpty(url)) return null;
+        List<Task> tempTasks = OrmUtils.getLiteOrm().query(new QueryBuilder<Task>(Task.class).whereEquals(Constant.URL_KEY, url));
+        if (tempTasks != null && !tempTasks.isEmpty()) {
+            return tempTasks.get(0);
+        } else {
+            return null;
+        }
+    }
+
 }

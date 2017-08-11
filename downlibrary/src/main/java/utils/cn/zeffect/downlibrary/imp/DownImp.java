@@ -14,7 +14,7 @@ import utils.cn.zeffect.downlibrary.bean.Task;
 import utils.cn.zeffect.downlibrary.interfaces.ListenerUtils;
 import utils.cn.zeffect.downlibrary.runnable.DownRunnable;
 import utils.cn.zeffect.downlibrary.utils.Constant;
-import utils.cn.zeffect.downlibrary.utils.OrmUtils;
+import utils.cn.zeffect.downlibrary.orm.OrmUtils;
 
 /**
  * 下载实现
@@ -71,8 +71,24 @@ public class DownImp {
         }
     }
 
+    /***
+     * 移除任务
+     * @param url
+     */
     public void removeTask(String url) {
         if (mRunnableHashMap.containsKey(url)) {
+            mRunnableHashMap.remove(url);
+            ListenerUtils.getInstance().removeListener(url);
+        }
+    }
+
+    /***
+     * 删除任务，并且数据库记录。（暂时没有删除一说，先隐藏起来再说吧）
+     * @param url
+     */
+    public void deleteTask(String url) {
+        if (mRunnableHashMap.containsKey(url)) {
+            mRunnableHashMap.get(url).setStaus(Task.STATU_PAUSE);
             mRunnableHashMap.remove(url);
             ListenerUtils.getInstance().removeListener(url);
         }

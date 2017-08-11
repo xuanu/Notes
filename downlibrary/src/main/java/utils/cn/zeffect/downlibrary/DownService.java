@@ -47,9 +47,10 @@ public class DownService extends Service {
                 }
             } else if (action.equals(Constant.PAUSE_ACTION)) {
                 String url = intent.getStringExtra(Constant.CONTENT_KEY);
-                if (!TextUtils.isEmpty(url)) {
-                    mImp.pauseTask(url);
-                }
+                if (!TextUtils.isEmpty(url)) mImp.pauseTask(url);
+            } else if (action.equals(Constant.DELETE_ACTION)) {
+                String url = intent.getStringExtra(Constant.CONTENT_KEY);
+                if (!TextUtils.isEmpty(url)) mImp.deleteTask(url);
             }
         }
         return START_STICKY;

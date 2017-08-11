@@ -1,4 +1,4 @@
-package utils.cn.zeffect.downlibrary.utils;
+package utils.cn.zeffect.downlibrary.orm;
 
 import android.content.Context;
 
