@@ -8,14 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.litesuits.orm.db.assit.QueryBuilder;
-
 import cn.zeffect.notes.R;
 import utils.cn.zeffect.downlibrary.bean.Task;
 import utils.cn.zeffect.downlibrary.interfaces.DownListener;
-import utils.cn.zeffect.downlibrary.utils.Constant;
 import utils.cn.zeffect.downlibrary.utils.DownUtils;
-import utils.cn.zeffect.downlibrary.utils.OrmUtils;
 
 /**
  * <pre>
