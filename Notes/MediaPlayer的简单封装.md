@@ -8,4 +8,5 @@
 MediaUtils.getInstance().play(String[]); //顺序播放数组  
 MediaUtils.getInstance().play(String[],OnPlayer); //顺序播放数组，带结束回调  
 MediaUtils.getInstance().stop(); //停止播放  
-```
+```  
+### 类参考：[类地址](https://github.com/xuanu/Notes/blob/master/commonlibrary/src/main/java/com/qimon/commonlibrary/media/MediaUtils.java);  
