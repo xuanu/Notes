@@ -37,7 +37,11 @@ public class MediaUtils {
         return instance;
     }
 
-
+    /**
+     * 播放
+     *
+     * @param paths 本地路径的集合，这里没有考虑其它路径，只有本地路径。因为我用这个路径判断了这个文件在不在。
+     **/
     public void play(String[] paths) {
         play(paths, null);
     }
@@ -50,7 +54,6 @@ public class MediaUtils {
             play(0);
         }
     }
-
 
     private List<String> mPaths = new ArrayList<>();
 
