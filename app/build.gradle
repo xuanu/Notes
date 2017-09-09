@@ -35,4 +35,5 @@ dependencies {
     compile project(':downlibrary')
     compile project(':commonlibrary')
     implementation 'org.jetbrains.anko:anko:+'
+    implementation 'com.android.support:design:+'
 }

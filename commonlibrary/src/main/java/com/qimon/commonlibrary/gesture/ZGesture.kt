@@ -1,11 +1,13 @@
 package com.qimon.commonlibrary.gesture
 
+import android.util.Log
 import android.view.MotionEvent
 
 /**
  * Created by Administrator on 2017/9/8.
  */
-class ZGesture(gesture: OnGesture) {
+class ZGesture(gesture: OnGesture?) {
+    private val TAG = ZGesture::class.java.name
     private val mGestureInterface by lazy { gesture }
     private val DOUBLE_TIME = 100
     /**
@@ -29,17 +31,24 @@ class ZGesture(gesture: OnGesture) {
     private fun doEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                Log.e(TAG, "down:${event.x},${event.y}")
                 downX = event.x
                 downY = event.y
                 if (mIndex < (0)) mIndex = 0//说明没有点击过
                 mIndex.inc()
-                if (mIndex.rem(2).equals(1)) mLastTime = System.currentTimeMillis()
+                if (mIndex.rem(2) == 1) mLastTime = System.currentTimeMillis()
             }
             MotionEvent.ACTION_MOVE -> {
             }
             MotionEvent.ACTION_UP -> {
                 //单双击的漂移，最多10dp
+                Log.e(TAG, "当前index:$mIndex")
+                if (Math.abs(downX.minus(event.x)) < 10 && Math.abs(downY.minus(event.y)) < 10) {
+                    if (mIndex.rem(2) == 0) mGestureInterface?.onDoubleUp()
+                    else mGestureInterface?.onSingleUp()
+                } else {
 
+                }
             }
         }
         return true
@@ -47,5 +56,8 @@ class ZGesture(gesture: OnGesture) {
 
 
     interface OnGesture {
+        fun onUp() {}
+        fun onSingleUp() {}
+        fun onDoubleUp() {}
     }
 }

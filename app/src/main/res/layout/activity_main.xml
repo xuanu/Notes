@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="cn.zeffect.notes.MainActivity">
 
-    <Button
-        android:id="@+id/goMemory"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="去内存泄露总界面"
-        />
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/gotoDown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="去下载界面"/>
+        <Button
+            android:id="@+id/goMemory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="去内存泄露总界面"
+            />
 
-    <Button
-        android:id="@+id/gotoPlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="去播放音频界面"/>
+        <Button
+            android:id="@+id/gotoDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="去下载界面"/>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/gotoPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="去播放音频界面"/>
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
