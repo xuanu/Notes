@@ -61,11 +61,7 @@ class ZGesture(context: Context, gesture: OnGesture?) : GestureDetector.OnGestur
         mGestureInterface?.onUp()
         return true
     }
-
-    private val TAG = ZGesture::class.java.name
     private val mGestureInterface by lazy { gesture }
-    private val DOUBLE_TIME = 100
-
     private val mContext by lazy { context }
 
     /**
