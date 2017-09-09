@@ -1,2 +1,3 @@
 <resources>
+    <dimen name="test">@android:dimen/dialog_min_width_major</dimen>
 </resources>
