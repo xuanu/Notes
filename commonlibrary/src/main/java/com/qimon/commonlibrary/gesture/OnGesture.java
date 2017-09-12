@@ -44,7 +44,7 @@ public abstract class OnGesture {
     /**
      * 移动
      **/
-    public void onMove(MotionEvent event1, MotionEvent event2) {
+    public void onMove(MotionEvent event) {
     }
 
     /**

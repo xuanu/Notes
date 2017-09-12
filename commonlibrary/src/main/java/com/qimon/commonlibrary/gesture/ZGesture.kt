@@ -1,8 +1,13 @@
 package com.qimon.commonlibrary.gesture
 
 import android.content.Context
+import android.os.Handler
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.View
+import android.view.ViewConfiguration
+import com.qimon.commonlibrary.utils.WeakHandler
+import kotlinx.coroutines.experimental.async
 
 /**
  * Created by Administrator on 2017/9/8.
@@ -10,67 +15,89 @@ import android.view.MotionEvent
  *
  * 如果发现onFling没有回调，请设置View.setLongClickable(true)
  */
-class ZGesture(context: Context, gesture: OnGesture?) : GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
-    override fun onShowPress(p0: MotionEvent?) {
-        mGestureInterface?.onPressed()
-    }
-
-    override fun onSingleTapUp(p0: MotionEvent?): Boolean {
-        return true
-    }
-
-    override fun onDoubleTap(p0: MotionEvent?): Boolean {
-        mGestureInterface?.onDoubleUp()
-        mGestureInterface?.onUp()
-        return true
-    }
-
-    override fun onDown(p0: MotionEvent?): Boolean {
-        mGestureInterface?.onDown()
-        return true
-    }
-
-    override fun onFling(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
-        val tempX = p1?.x ?: 0f.minus(p0?.x ?: 0f)
-        val tempY = p1?.y ?: 0f.minus(p0?.y ?: 0f)
-        if (Math.abs(tempX) > Math.abs(tempY)) {
-            if (tempX > 0) mGestureInterface?.onRight() else mGestureInterface?.onLeft()
-        } else {
-            if (tempY > 0) mGestureInterface?.onBottom() else mGestureInterface?.onTop()
-        }
-        mGestureInterface?.onUp()
-        return true
-    }
-
-    override fun onScroll(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
-        mGestureInterface?.onMove(p0, p1)
-        return true
-    }
-
-    override fun onLongPress(p0: MotionEvent?) {
-        mGestureInterface?.onLong()
-        mGestureInterface?.onUp()
-    }
-
-    override fun onDoubleTapEvent(p0: MotionEvent?): Boolean {
-        return true
-    }
-
-    override fun onSingleTapConfirmed(p0: MotionEvent?): Boolean {
-        mGestureInterface?.onSingleUp()
-        mGestureInterface?.onUp()
-        return true
-    }
+class ZGesture(context: Context, gesture: OnGesture?) {
     private val mGestureInterface by lazy { gesture }
     private val mContext by lazy { context }
-
     /**
      * 通过这个接口，得到触摸事件
      * */
     fun onTouchEvent(event: MotionEvent): Boolean {
-        return mGestureDetector.onTouchEvent(event)
+        return doGesture(event)
     }
 
-    private val mGestureDetector: GestureDetector by lazy { GestureDetector(mContext, this@ZGesture).apply { this.setOnDoubleTapListener(this@ZGesture) } }
+    private var mPoints = Points(0f, 0f)
+    private val mDoubleRun by lazy { DoubleRunnable(mGestureInterface) }
+    private val mLongPrRun = LongPreRunnable()
+
+    private fun doGesture(event: MotionEvent): Boolean {
+        when (event.action and MotionEvent.ACTION_MASK) {
+            MotionEvent.ACTION_DOWN -> {
+                mPoints.x1 = event.x
+                mPoints.y1 = event.y
+                mGestureInterface?.onDown()
+                WeakHandler(mContext.mainLooper).removeCallbacks(mDoubleRun)
+                WeakHandler(mContext.mainLooper).removeCallbacks(mLongPrRun)
+                WeakHandler(mContext.mainLooper).postDelayed(mDoubleRun, ViewConfiguration.getDoubleTapTimeout().toLong())
+                WeakHandler(mContext.mainLooper).postDelayed(mLongPrRun, ViewConfiguration.getLongPressTimeout().toLong())
+            }
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                WeakHandler(mContext.mainLooper).removeCallbacks(mDoubleRun)
+                WeakHandler(mContext.mainLooper).removeCallbacks(mLongPrRun)
+            }
+            MotionEvent.ACTION_MOVE -> {
+                mGestureInterface?.onMove(event)
+            }
+            MotionEvent.ACTION_POINTER_UP -> {
+            }
+            MotionEvent.ACTION_UP -> {
+                mGestureInterface?.onUp()
+                if (Math.abs(event.x - mPoints.x1) < ViewConfiguration.get(mContext).scaledTouchSlop
+                        && Math.abs(event.y - mPoints.y1) < ViewConfiguration.get(mContext).scaledTouchSlop) {
+                    mDoubleRun.addCount()
+                    WeakHandler(mContext.mainLooper).removeCallbacks(mDoubleRun)
+                    WeakHandler(mContext.mainLooper).removeCallbacks(mLongPrRun)
+                } else {
+                    //手松开时，距离大一点
+                    val tempX = event.x.minus(mPoints.x1)
+                    val tempY = event.y.minus(mPoints.y1)
+                    if (Math.abs(tempX) > Math.abs(tempY)) {
+                        if (tempX > 0) mGestureInterface?.onRight() else mGestureInterface?.onLeft()
+                    } else {
+                        if (tempY > 0) mGestureInterface?.onBottom() else mGestureInterface?.onTop()
+                    }
+                }
+            }
+        }
+        return true
+    }
+
+
+    class DoubleRunnable(gesture: OnGesture?) : Runnable {
+        var clickCount = 0
+        private val mDoubleGesture by lazy { gesture }
+        override fun run() {
+            when (clickCount) {
+                in 2..10 -> mDoubleGesture?.onDoubleUp()
+                1 -> mDoubleGesture?.onSingleUp()
+            }
+            clickCount = 0
+        }
+
+        fun addCount() {
+            clickCount++
+        }
+
+    }
+
+    class LongPreRunnable : Runnable {
+        override fun run() {
+        }
+    }
+
+    /**双指，两个坐标点**/
+    data class Points(var x1: Float, var y1: Float) {
+        var x2: Float = 0f
+        var y2: Float = 0f
+    }
 
 }
