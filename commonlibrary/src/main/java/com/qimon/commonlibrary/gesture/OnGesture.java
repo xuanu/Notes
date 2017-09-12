@@ -70,4 +70,19 @@ public abstract class OnGesture {
      */
     public void onLong() {
     }
+
+    /***
+     * 双指放大
+     */
+    public void zoomBig(Double pDouble) {
+
+    }
+
+    /***
+     * 缩小
+     * **/
+    public void zoomSmall(Double pDouble) {
+
+    }
+
 }

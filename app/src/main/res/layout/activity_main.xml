@@ -9,8 +9,8 @@
     tools:context="cn.zeffect.notes.MainActivity">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <Button
@@ -27,8 +27,8 @@
 
         <Button
             android:id="@+id/gotoPlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:text="控件的手势封装，上下左右单击双击长按" />
     </LinearLayout>
 

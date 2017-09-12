@@ -61,14 +61,20 @@ class ZGesture(context: Context, gesture: OnGesture?) : GestureDetector.OnGestur
         mGestureInterface?.onUp()
         return true
     }
+
     private val mGestureInterface by lazy { gesture }
     private val mContext by lazy { context }
+    private val mTwoFingerGesture by lazy { TwoFingerGesture(mContext, mGestureInterface) }
 
     /**
      * 通过这个接口，得到触摸事件
      * */
     fun onTouchEvent(event: MotionEvent): Boolean {
-        return mGestureDetector.onTouchEvent(event)
+        return when (event.pointerCount) {
+            1 -> mGestureDetector.onTouchEvent(event)//单指
+            2 -> mTwoFingerGesture.onTouch(event)
+            else -> true
+        }
     }
 
     private val mGestureDetector: GestureDetector by lazy { GestureDetector(mContext, this@ZGesture).apply { this.setOnDoubleTapListener(this@ZGesture) } }

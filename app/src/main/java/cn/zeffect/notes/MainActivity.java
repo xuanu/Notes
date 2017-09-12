@@ -68,6 +68,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         public void onLong() {
             Snackbar.make(mView, "长按", Snackbar.LENGTH_SHORT).show();
         }
+
+        @Override
+        public void zoomBig(Double pDouble) {
+            Snackbar.make(mView, "放大：" + pDouble, Snackbar.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void zoomSmall(Double pDouble) {
+            Snackbar.make(mView, "缩小：" + pDouble, Snackbar.LENGTH_SHORT).show();
+        }
     });
 
     @Override
