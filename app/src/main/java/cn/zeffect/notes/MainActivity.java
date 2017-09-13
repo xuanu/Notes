@@ -61,7 +61,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         @Override
-        public void onMove(MotionEvent event1, MotionEvent event2) {
+        public void onMove(MotionEvent event1) {
         }
 
         @Override
