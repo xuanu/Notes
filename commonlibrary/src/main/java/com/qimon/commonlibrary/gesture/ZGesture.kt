@@ -84,17 +84,23 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                     }
                     2 -> {//两指计算缩放
                         //应该是和上一次的点比较，而不是按下的点
+                        //不同的方向，算缩放，相同的方向，算其它操作
                         val newPoints = Points(event.getX(0), event.getY(0), event.getX(1), event.getY(1))
-                        //算两点间隔吧，大了算放，小了算缩
-                        val space = space(mMoveEndPoints, newPoints)
-                        Log.e(TAG, "两次间隔：$space")
-                        if (Math.abs(space) > ViewConfiguration.get(mContext).scaledTouchSlop) {
-                            if (space > 0) {
-                                mGestureInterface?.zoomBig(space)
-                                Log.e(TAG, "执行放大")
-                            } else {
-                                mGestureInterface?.zoomSmall(space)
-                                Log.e(TAG, "执行缩短")
+                        when (direction(newPoints, mMoveEndPoints)) {
+                            1 -> {
+                            }
+                            -1 -> {
+                                val space = space(mMoveEndPoints, newPoints)
+                                Log.e(TAG, "两次间隔：$space")
+                                if (Math.abs(space) > ViewConfiguration.get(mContext).scaledTouchSlop) {
+                                    if (space > 0) {
+                                        mGestureInterface?.zoomBig(space)
+                                        Log.e(TAG, "执行放大")
+                                    } else {
+                                        mGestureInterface?.zoomSmall(space)
+                                        Log.e(TAG, "执行缩短")
+                                    }
+                                }
                             }
                         }
                         mMoveEndPoints.x1 = newPoints.x1;mMoveEndPoints.y1 = newPoints.y1;mMoveEndPoints.x2 = newPoints.x2;mMoveEndPoints.y2 = newPoints.y2
@@ -205,5 +211,31 @@ class ZGesture(context: Context, gesture: OnGesture?) {
         val p1space = Math.sqrt(p1x * p1x * 1.0 + p1y * p1y)
         return p1space - p0sapce
     }
+
+    /**
+     * 判断新旧两点的方向，相同还是相反
+     *
+     * @param points1 最新的点
+     * @param points0 上一次一点
+     * @return 0 代表无操作，1相同方向，-1不同方向
+     */
+    fun direction(points1: Points, points0: Points): Int {
+
+        val x1s = (points1.x1 - points0.x1).toInt()
+        val y1s = (points1.y1 - points0.y1).toInt()
+        val x2s = (points1.x2 - points0.x2).toInt()
+        val y2s = (points1.y2 - points0.y2).toInt()
+        return when {
+            x1s == 0 && x2s == 0 && y1s == 0 && y2s == 0 -> 0
+            sameSign(x1s, x2s) && sameSign(y1s, y2s) -> 1
+            !sameSign(x1s, x2s) && !sameSign(y1s, y2s) -> -1
+            else -> 0
+        }
+    }
+
+    fun sameSign(a: Int, b: Int): Boolean {
+        return a * b >= 0
+    }
+
 
 }
