@@ -86,7 +86,8 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                         //应该是和上一次的点比较，而不是按下的点
                         //不同的方向，算缩放，相同的方向，算其它操作
                         val newPoints = Points(event.getX(0), event.getY(0), event.getX(1), event.getY(1))
-                        when (direction(newPoints, mMoveEndPoints)) {
+                        val direction = direction(newPoints, mMoveEndPoints)
+                        when (direction.sameDirection) {
                             1 -> {
                             }
                             -1 -> {
@@ -219,23 +220,32 @@ class ZGesture(context: Context, gesture: OnGesture?) {
      * @param points0 上一次一点
      * @return 0 代表无操作，1相同方向，-1不同方向
      */
-    fun direction(points1: Points, points0: Points): Int {
-
+    fun direction(points1: Points, points0: Points): Zdirection {
+        val direct: Zdirection = Zdirection()
         val x1s = (points1.x1 - points0.x1).toInt()
         val y1s = (points1.y1 - points0.y1).toInt()
         val x2s = (points1.x2 - points0.x2).toInt()
         val y2s = (points1.y2 - points0.y2).toInt()
         return when {
-            x1s == 0 && x2s == 0 && y1s == 0 && y2s == 0 -> 0
-            sameSign(x1s, x2s) && sameSign(y1s, y2s) -> 1
-            !sameSign(x1s, x2s) && !sameSign(y1s, y2s) -> -1
-            else -> 0
+            x1s == 0 && x2s == 0 && y1s == 0 && y2s == 0 -> direct
+            sameSign(x1s, x2s) && sameSign(y1s, y2s) -> {
+                //计算方向是上下左右
+                direct.sameDirection = 1
+                direct
+            }
+            !sameSign(x1s, x2s) && !sameSign(y1s, y2s) -> {
+                direct.sameDirection = -1
+                direct
+            }
+            else -> direct
         }
     }
 
     fun sameSign(a: Int, b: Int): Boolean {
         return a * b >= 0
     }
+
+    data class Zdirection(var sameDirection: Int = 0, var direction: Int = 0)
 
 
 }
