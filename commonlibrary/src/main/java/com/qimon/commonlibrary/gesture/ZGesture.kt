@@ -1,7 +1,6 @@
 package com.qimon.commonlibrary.gesture
 
 import android.content.Context
-import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import com.qimon.commonlibrary.utils.WeakHandler
@@ -110,9 +109,9 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                                 val space = space(mMoveEndPoints, newPoints)
                                 if (Math.abs(space) > ViewConfiguration.get(mContext).scaledTouchSlop) {
                                     if (space > 0) {
-                                        mGestureInterface?.zoomBig(space)
+                                        mGestureInterface?.on2ZoomBigMove(space)
                                     } else {
-                                        mGestureInterface?.zoomSmall(space)
+                                        mGestureInterface?.on2ZoomSmallMove(space)
                                     }
                                 }
                             }
@@ -154,6 +153,37 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                                 mGestureInterface?.onBottomUp();mGestureInterface?.onBottomUp(event)
                             } else {
                                 mGestureInterface?.onTopUp();mGestureInterface?.onTopUp(event)
+                            }
+                        }
+                    } else {
+                        //取消了一级手势，没有取消2个手指
+                        val direction = direction(mMoveEndPoints, mPoints)
+                        when (direction.sameDirection) {
+                            1 -> {//两指往相同方向移动
+                                when (direction.direction) {
+                                    1 -> {
+                                        mGestureInterface?.on2TopUp(direction.space)
+                                    }
+                                    2 -> {
+                                        mGestureInterface?.on2BottomUp(direction.space)
+                                    }
+                                    3 -> {
+                                        mGestureInterface?.on2LeftUp(direction.space)
+                                    }
+                                    4 -> {
+                                        mGestureInterface?.on2RightUp(direction.space)
+                                    }
+                                }
+                            }
+                            -1 -> {
+                                val space = space(mPoints, mMoveEndPoints)
+                                if (Math.abs(space) > ViewConfiguration.get(mContext).scaledTouchSlop) {
+                                    if (space > 0) {
+                                        mGestureInterface?.on2ZoomBigUp(space)
+                                    } else {
+                                        mGestureInterface?.on2ZoomSmallUp(space)
+                                    }
+                                }
                             }
                         }
                     }

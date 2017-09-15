@@ -100,15 +100,22 @@ public abstract class OnGesture {
      * 双指放大
      * @param pDouble 两次间隔
      */
-    public void zoomBig(Double pDouble) {
+    public void on2ZoomBigMove(Double pDouble) {
 
+    }
+
+    public void on2ZoomBigUp(Double pDouble) {
     }
 
     /***
      * 缩小
      * @param pDouble 两次间隔
      * **/
-    public void zoomSmall(Double pDouble) {
+    public void on2ZoomSmallMove(Double pDouble) {
+
+    }
+
+    public void on2ZoomSmallUp(Double pDouble) {
 
     }
 
@@ -122,6 +129,18 @@ public abstract class OnGesture {
     }
 
     public void on2RightMove(Float pFloat) {
+    }
+
+    public void on2TopUp(Float pFloat) {
+    }
+
+    public void on2BottomUp(Float pFloat) {
+    }
+
+    public void on2LeftUp(Float pFloat) {
+    }
+
+    public void on2RightUp(Float pFloat) {
     }
 
     //***************************取消事件
