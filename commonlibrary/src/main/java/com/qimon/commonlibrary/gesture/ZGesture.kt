@@ -93,15 +93,19 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                                 when (direction.direction) {
                                     1 -> {
                                         mGestureInterface?.on2TopMove(direction.space)
+                                        mGestureInterface?.on2TopMove(mMoveEndPoints, newPoints, direction.space)
                                     }
                                     2 -> {
                                         mGestureInterface?.on2BottomMove(direction.space)
+                                        mGestureInterface?.on2BottomMove(mMoveEndPoints, newPoints, direction.space)
                                     }
                                     3 -> {
                                         mGestureInterface?.on2LeftMove(direction.space)
+                                        mGestureInterface?.on2LeftMove(mMoveEndPoints, newPoints, direction.space)
                                     }
                                     4 -> {
                                         mGestureInterface?.on2RightMove(direction.space)
+                                        mGestureInterface?.on2LeftMove(mMoveEndPoints, newPoints, direction.space)
                                     }
                                 }
                             }
@@ -110,8 +114,10 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                                 if (Math.abs(space) > ViewConfiguration.get(mContext).scaledTouchSlop) {
                                     if (space > 0) {
                                         mGestureInterface?.on2ZoomBigMove(space)
+                                        mGestureInterface?.on2ZoomBigMove(mMoveEndPoints, newPoints, space)
                                     } else {
                                         mGestureInterface?.on2ZoomSmallMove(space)
+                                        mGestureInterface?.on2ZoomBigMove(mMoveEndPoints, newPoints, space)
                                     }
                                 }
                             }
@@ -157,31 +163,39 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                         }
                     } else {
                         //取消了一级手势，没有取消2个手指
-                        val direction = direction(mMoveEndPoints, mPoints)
-                        when (direction.sameDirection) {
-                            1 -> {//两指往相同方向移动
-                                when (direction.direction) {
-                                    1 -> {
-                                        mGestureInterface?.on2TopUp(direction.space)
-                                    }
-                                    2 -> {
-                                        mGestureInterface?.on2BottomUp(direction.space)
-                                    }
-                                    3 -> {
-                                        mGestureInterface?.on2LeftUp(direction.space)
-                                    }
-                                    4 -> {
-                                        mGestureInterface?.on2RightUp(direction.space)
+                        if ((mMoveEndPoints.x2 != 0f || mMoveEndPoints.y2 != 0f) && (mPoints.x2 != 0f || mPoints.y2 != 0f)) {
+                            val direction = direction(mMoveEndPoints, mPoints)
+                            when (direction.sameDirection) {
+                                1 -> {//两指往相同方向移动
+                                    when (direction.direction) {
+                                        1 -> {
+                                            mGestureInterface?.on2TopUp(direction.space)
+                                            mGestureInterface?.on2TopUp(mPoints, mMoveEndPoints, direction.space)
+                                        }
+                                        2 -> {
+                                            mGestureInterface?.on2BottomUp(direction.space)
+                                            mGestureInterface?.on2BottomUp(mPoints, mMoveEndPoints, direction.space)
+                                        }
+                                        3 -> {
+                                            mGestureInterface?.on2LeftUp(direction.space)
+                                            mGestureInterface?.on2LeftUp(mPoints, mMoveEndPoints, direction.space)
+                                        }
+                                        4 -> {
+                                            mGestureInterface?.on2RightUp(direction.space)
+                                            mGestureInterface?.on2RightUp(mPoints, mMoveEndPoints, direction.space)
+                                        }
                                     }
                                 }
-                            }
-                            -1 -> {
-                                val space = space(mPoints, mMoveEndPoints)
-                                if (Math.abs(space) > ViewConfiguration.get(mContext).scaledTouchSlop) {
-                                    if (space > 0) {
-                                        mGestureInterface?.on2ZoomBigUp(space)
-                                    } else {
-                                        mGestureInterface?.on2ZoomSmallUp(space)
+                                -1 -> {
+                                    val space = space(mPoints, mMoveEndPoints)
+                                    if (Math.abs(space) > ViewConfiguration.get(mContext).scaledTouchSlop) {
+                                        if (space > 0) {
+                                            mGestureInterface?.on2ZoomBigUp(space)
+                                            mGestureInterface?.on2ZoomBigUp(mPoints, mMoveEndPoints, space)
+                                        } else {
+                                            mGestureInterface?.on2ZoomSmallUp(space)
+                                            mGestureInterface?.on2ZoomSmallUp(mPoints, mMoveEndPoints, space)
+                                        }
                                     }
                                 }
                             }

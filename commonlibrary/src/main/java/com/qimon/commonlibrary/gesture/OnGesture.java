@@ -13,6 +13,10 @@ public abstract class OnGesture {
     public void onTopUp() {
     }
 
+    /***
+     * 上滑，抬起
+     * @param pEvent
+     */
     public void onTopUp(MotionEvent pEvent) {
     }
 
@@ -141,6 +145,61 @@ public abstract class OnGesture {
     }
 
     public void on2RightUp(Float pFloat) {
+    }
+
+    /***
+     * 双指放大
+     * @param pDouble 两次间隔
+     *                @param pPoints0 上一次坐标
+     *                                @param pPoints1 新的坐标
+     */
+    public void on2ZoomBigMove(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Double pDouble) {
+
+    }
+
+    /***
+     * 放大，抬起时
+     * @param pPoints0 按下时坐标
+     * @param pPoints1 抬起时坐标
+     * @param pDouble 间隔
+     */
+    public void on2ZoomBigUp(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Double pDouble) {
+    }
+
+    /***
+     * 缩小
+     * @param pDouble 两次间隔
+     * **/
+    public void on2ZoomSmallMove(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Double pDouble) {
+
+    }
+
+    public void on2ZoomSmallUp(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Double pDouble) {
+
+    }
+
+    public void on2TopMove(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Float pFloat) {
+    }
+
+    public void on2BottomMove(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Float pFloat) {
+    }
+
+    public void on2LeftMove(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Float pFloat) {
+    }
+
+    public void on2RightMove(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Float pFloat) {
+    }
+
+    public void on2TopUp(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Float pFloat) {
+    }
+
+    public void on2BottomUp(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Float pFloat) {
+    }
+
+    public void on2LeftUp(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Float pFloat) {
+    }
+
+    public void on2RightUp(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Float pFloat) {
     }
 
     //***************************取消事件

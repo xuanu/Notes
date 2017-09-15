@@ -9,6 +9,7 @@ android开发笔记
     0. 移动超过感知距离会取消单击双击长按手势
     1. 单指的上下左右，是抬起手指时判断相对按下的位置。
     2. 双指反向(相对最后点)是缩放，双指同向是on2?Move(space)(选取相对位置上，距离最大);
+所有的回调都在这里：[OnGesture.class](https://github.com/xuanu/Notes/blob/master/commonlibrary/src/main/java/com/qimon/commonlibrary/gesture/OnGesture.java);
 ```
 //使用方法与GestureDetector一致，仅对其进行封装，方便使用
 ZGesture(context,OnGesture).onTouchEvent(event)
