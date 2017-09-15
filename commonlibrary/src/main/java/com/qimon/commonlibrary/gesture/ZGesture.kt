@@ -16,6 +16,7 @@ class ZGesture(context: Context, gesture: OnGesture?) {
     private val TAG = ZGesture::class.java.name
     private val mGestureInterface by lazy { gesture }
     private val mContext by lazy { context }
+    private val mTouchSlop by lazy { ViewConfiguration.get(mContext).scaledTouchSlop }
     /**
      * 通过这个接口，得到触摸事件
      * */
@@ -40,6 +41,7 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                 mMoveEndPoints.x1 = event.x
                 mMoveEndPoints.y1 = event.y
                 mGestureInterface?.onDown()
+                mGestureInterface?.onDown(event)
                 mLongPrRun.cancel(true)
                 WeakHandler(mContext.mainLooper).removeCallbacks(mLongPrRun)
                 val doubleCount = mDoubleRun.getCount()
@@ -52,10 +54,10 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                 if (doubleCount == 0) {
                     mDoubleRun.cancel(false)
                     mDoubleRun.isLong(false)
-                    WeakHandler(mContext.mainLooper).postDelayed(mDoubleRun, ViewConfiguration.getDoubleTapTimeout().toLong())
+                    WeakHandler(mContext.mainLooper).postDelayed(mDoubleRun.apply { this.mEvent = event }, ViewConfiguration.getDoubleTapTimeout().toLong())
                 }
                 mLongPrRun.cancel(false)
-                WeakHandler(mContext.mainLooper).postDelayed(mLongPrRun, ViewConfiguration.getLongPressTimeout().toLong())
+                WeakHandler(mContext.mainLooper).postDelayed(mLongPrRun.apply { this.mEvent = event }, ViewConfiguration.getLongPressTimeout().toLong())
             }
             MotionEvent.ACTION_POINTER_DOWN -> {
                 mDoubleRun.cancel(true)
@@ -70,15 +72,15 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                 mMoveEndPoints.y2 = event.getY(1)
             }
             MotionEvent.ACTION_MOVE -> {
+                mGestureInterface?.onMove(event)
                 when (event.pointerCount) {
                     1 -> {//一指移动
-                        mGestureInterface?.onMove(event)
-                        if (Math.abs(event.x - mPoints.x1) < ViewConfiguration.get(mContext).scaledTouchSlop
-                                || Math.abs(event.y - mPoints.y1) < ViewConfiguration.get(mContext).scaledTouchSlop) {
+                        if (Math.abs(event.x - mPoints.x1) > ViewConfiguration.get(mContext).scaledTouchSlop
+                                || Math.abs(event.y - mPoints.y1) > ViewConfiguration.get(mContext).scaledTouchSlop) {
                             //移动距离大于感知距离
                             mLongPrRun.cancel(true)
                             WeakHandler(mContext.mainLooper).removeCallbacks(mLongPrRun)
-                            mLongPrRun.cancel(true)
+                            mDoubleRun.cancel(true)
                             WeakHandler(mContext.mainLooper).removeCallbacks(mDoubleRun)
                         }
                     }
@@ -88,18 +90,29 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                         val newPoints = Points(event.getX(0), event.getY(0), event.getX(1), event.getY(1))
                         val direction = direction(newPoints, mMoveEndPoints)
                         when (direction.sameDirection) {
-                            1 -> {
+                            1 -> {//两指往相同方向移动
+                                when (direction.direction) {
+                                    1 -> {
+                                        mGestureInterface?.on2TopMove(direction.space)
+                                    }
+                                    2 -> {
+                                        mGestureInterface?.on2BottomMove(direction.space)
+                                    }
+                                    3 -> {
+                                        mGestureInterface?.on2LeftMove(direction.space)
+                                    }
+                                    4 -> {
+                                        mGestureInterface?.on2RightMove(direction.space)
+                                    }
+                                }
                             }
                             -1 -> {
                                 val space = space(mMoveEndPoints, newPoints)
-                                Log.e(TAG, "两次间隔：$space")
                                 if (Math.abs(space) > ViewConfiguration.get(mContext).scaledTouchSlop) {
                                     if (space > 0) {
                                         mGestureInterface?.zoomBig(space)
-                                        Log.e(TAG, "执行放大")
                                     } else {
                                         mGestureInterface?.zoomSmall(space)
-                                        Log.e(TAG, "执行缩短")
                                     }
                                 }
                             }
@@ -112,6 +125,7 @@ class ZGesture(context: Context, gesture: OnGesture?) {
             }
             MotionEvent.ACTION_UP -> {
                 mGestureInterface?.onUp()
+                mGestureInterface?.onUp(event)
                 //自己抬起来，就不算长按了
                 if (mDoubleRun.getIsLong()) {
                     mDoubleRun.clearCount()
@@ -130,9 +144,17 @@ class ZGesture(context: Context, gesture: OnGesture?) {
                         val tempX = event.x.minus(mPoints.x1)
                         val tempY = event.y.minus(mPoints.y1)
                         if (Math.abs(tempX) > Math.abs(tempY)) {
-                            if (tempX > 0) mGestureInterface?.onRight() else mGestureInterface?.onLeft()
+                            if (tempX > 0) {
+                                mGestureInterface?.onRightUp();mGestureInterface?.onRightUp(event)
+                            } else {
+                                mGestureInterface?.onLeftUp();mGestureInterface?.onLeftUp(event)
+                            }
                         } else {
-                            if (tempY > 0) mGestureInterface?.onBottom() else mGestureInterface?.onTop()
+                            if (tempY > 0) {
+                                mGestureInterface?.onBottomUp();mGestureInterface?.onBottomUp(event)
+                            } else {
+                                mGestureInterface?.onTopUp();mGestureInterface?.onTopUp(event)
+                            }
                         }
                     }
                 }
@@ -147,14 +169,22 @@ class ZGesture(context: Context, gesture: OnGesture?) {
         private var cancel: Boolean = false
         private var clickCount = 0
         private val mDoubleGesture by lazy { gesture }
+        var mEvent: MotionEvent? = null
         override fun run() {
             if (!cancel && !isLong) {
                 when (clickCount) {
-                    in 2..10 -> mDoubleGesture?.onDoubleUp()
-                    1 -> mDoubleGesture?.onSingleUp()
+                    in 2..10 -> {
+                        mDoubleGesture?.onDoubleUp()
+                        if (mEvent != null) mDoubleGesture?.onDoubleUp(mEvent)
+                    }
+                    1 -> {
+                        mDoubleGesture?.onSingleUp()
+                        if (mEvent != null) mDoubleGesture?.onSingleUp(mEvent)
+                    }
                 }
             }
             clickCount = 0
+            mEvent = null
         }
 
         fun addCount() {
@@ -171,6 +201,7 @@ class ZGesture(context: Context, gesture: OnGesture?) {
 
         fun cancel(cancel: Boolean) {
             this.cancel = cancel
+            mEvent = null
         }
 
         fun isLong(tIsLong: Boolean) {
@@ -188,21 +219,35 @@ class ZGesture(context: Context, gesture: OnGesture?) {
         private val mLongGesture by lazy { gesture }
         private val mlDoubleRun by lazy { doubleRunnable }
         private val mlZesture by lazy { zGesture }
+        var mEvent: MotionEvent? = null
         override fun run() {
-            if (!cancel) mLongGesture?.onLong()
+            if (!cancel) {
+                mLongGesture?.onLongClick()
+                if (mEvent != null) {
+                    mLongGesture?.onLongClick(mEvent)
+                }
+            }
             mlDoubleRun.isLong(true)
             mlDoubleRun.cancel(true)
             mlZesture.cancelOneFingerEvent = true
+            mEvent = null
         }
 
         fun cancel(cancel: Boolean) {
             this.cancel = cancel
+            mEvent = null
         }
     }
 
     /**双指，两个坐标点**/
     data class Points(var x1: Float, var y1: Float, var x2: Float = 0f, var y2: Float = 0f)
 
+    /**
+     * 计算两坐标点间隔
+     *
+     * @param p0 旧的两点
+     * @param p1 新的两点
+     * ***/
     fun space(p0: Points, p1: Points): Double {
         val p0x = Math.abs(p0.x1 - p0.x2)
         val p0y = Math.abs(p0.y1 - p0.y2)
@@ -211,6 +256,15 @@ class ZGesture(context: Context, gesture: OnGesture?) {
         val p1y = Math.abs(p1.y1 - p1.y2)
         val p1space = Math.sqrt(p1x * p1x * 1.0 + p1y * p1y)
         return p1space - p0sapce
+    }
+
+    /***
+     * 计算两点间隔距离
+     */
+    fun spaceTwoPoint(x1: Float, y1: Float, x2: Float, y2: Float): Float {
+        val sp0x = Math.abs(x2 - x1)
+        val sp0y = Math.abs(y2 - y1)
+        return Math.sqrt(sp0x * sp0x * 1.0 + sp0y * sp0y).toFloat()
     }
 
     /**
@@ -229,23 +283,57 @@ class ZGesture(context: Context, gesture: OnGesture?) {
         return when {
             x1s == 0 && x2s == 0 && y1s == 0 && y2s == 0 -> direct
             sameSign(x1s, x2s) && sameSign(y1s, y2s) -> {
-                //计算方向是上下左右
                 direct.sameDirection = 1
+                //计算方向是上下左右和距离，只要其中一点的距离，大于感知距离就算移动了，并且使用距离较大的值
+                val sp1 = spaceTwoPoint(points1.x1, points1.y1, points0.x1, points0.y1)
+                val sp2 = spaceTwoPoint(points1.x2, points1.y2, points0.x2, points0.y2)
+                if ((sp1 > mTouchSlop) || (sp2 > mTouchSlop)) {
+                    if (sp1 > sp2) {
+                        val sp1x = points1.x1 - points0.x1
+                        val sp1y = points1.y1 - points0.y1
+                        if (Math.abs(sp1x) > Math.abs(sp1y)) {
+                            //在x上移动
+                            direct.direction = if (sp1x < 0) 3 else 4
+                            direct.space = Math.abs(sp1x)
+                        } else {
+                            //在Y上移动
+                            direct.direction = if (sp1y < 0) 1 else 2
+                            direct.space = Math.abs(sp1y)
+                        }
+                    } else {
+                        val sp2x = points1.x2 - points0.x2
+                        val sp2y = points1.y2 - points0.y2
+                        if (Math.abs(sp2x) > Math.abs(sp2y)) {
+                            //在x上移动
+                            direct.direction = if (sp2x < 0) 3 else 4
+                            direct.space = Math.abs(sp2x)
+                        } else {
+                            //在Y上移动
+                            direct.direction = if (sp2y < 0) 1 else 2
+                            direct.space = Math.abs(sp2y)
+                        }
+                    }
+                }
                 direct
             }
             !sameSign(x1s, x2s) && !sameSign(y1s, y2s) -> {
                 direct.sameDirection = -1
+                //方向相反，做缩放，这里就暂时不用
                 direct
             }
             else -> direct
         }
     }
 
+    /**是否为相同的符号**/
     fun sameSign(a: Int, b: Int): Boolean {
         return a * b >= 0
     }
 
-    data class Zdirection(var sameDirection: Int = 0, var direction: Int = 0)
+    /***
+     * @param direction 1234代表上下左右
+     */
+    data class Zdirection(var sameDirection: Int = 0, var direction: Int = 0, var space: Float = 0f)
 
 
 }

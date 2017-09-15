@@ -23,22 +23,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private View mView;
     private ZGesture mGesture = new ZGesture(this, new OnGesture() {
         @Override
-        public void onTop() {
+        public void onTopUp() {
             Snackbar.make(mView, "上", Snackbar.LENGTH_SHORT).show();
         }
 
         @Override
-        public void onBottom() {
+        public void onBottomUp() {
             Snackbar.make(mView, "下", Snackbar.LENGTH_SHORT).show();
         }
 
         @Override
-        public void onLeft() {
+        public void onLeftUp() {
             Snackbar.make(mView, "左", Snackbar.LENGTH_SHORT).show();
         }
 
         @Override
-        public void onRight() {
+        public void onRightUp() {
             Snackbar.make(mView, "右", Snackbar.LENGTH_SHORT).show();
         }
 
@@ -65,7 +65,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         @Override
-        public void onLong() {
+        public void onLongClick() {
             Snackbar.make(mView, "长按", Snackbar.LENGTH_SHORT).show();
         }
 
@@ -77,6 +77,26 @@ public class MainActivity extends Activity implements View.OnClickListener {
         @Override
         public void zoomSmall(Double pDouble) {
             Snackbar.make(mView, "缩小：" + pDouble, Snackbar.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void on2LeftMove(Float pFloat) {
+            Snackbar.make(mView, "双指向左：" + pFloat, Snackbar.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void on2RightMove(Float p) {
+            Snackbar.make(mView, "双指向右：" + p, Snackbar.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void on2TopMove(Float pFloat) {
+            Snackbar.make(mView, "双指向上：" + pFloat, Snackbar.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void on2BottomMove(Float pFloat) {
+            Snackbar.make(mView, "双指向下：" + pFloat, Snackbar.LENGTH_SHORT).show();
         }
     });
 
