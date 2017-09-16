@@ -7,143 +7,66 @@ import android.view.MotionEvent;
  */
 
 public abstract class OnGesture {
-    /**
-     * 上滑
-     **/
     public void onTopUp() {
     }
-
-    /***
-     * 上滑，抬起
-     * @param pEvent
-     */
-    public void onTopUp(MotionEvent pEvent) {
-    }
-
-    /**
-     * 下滑
-     */
     public void onBottomUp() {
     }
-
-    public void onBottomUp(MotionEvent pEvent) {
-
-    }
-
-    /***左滑**/
     public void onLeftUp() {
     }
-
-    public void onLeftUp(MotionEvent pEvent) {
-    }
-
-    /**
-     * 右滑
-     **/
     public void onRightUp() {
     }
-
-    public void onRightUp(MotionEvent pEvent) {
+    public void onTopMove(Float pd) {
     }
-
-    /**
-     * 按下
-     **/
-    public void onDown() {
+    public void onBottomMove(Float pd) {
     }
-
+    public void onLeftMove(Float pd) {
+    }
+    public void onRightMove(Float pd) {
+    }
     public void onDown(MotionEvent pEvent) {
     }
-
-
-    /**
-     * 抬起
-     **/
-    public void onUp() {
-    }
-
     public void onUp(MotionEvent pEvent) {
     }
-
-    /**
-     * 移动
-     **/
     public void onMove(MotionEvent event) {
     }
-
     /**
      * 单击
      **/
     public void onSingleUp() {
     }
-
-    public void onSingleUp(MotionEvent pEvent) {
-    }
-
     /**
      * 双击
      **/
     public void onDoubleUp() {
     }
-
-    public void onDoubleUp(MotionEvent pEvent) {
-    }
-
     /**
      * 长按
      */
     public void onLongClick() {
     }
-
-    public void onLongClick(MotionEvent pEvent) {
-    }
-
     //**********************双指手势区
-
-    /***
-     * 双指放大
-     * @param pDouble 两次间隔
-     */
     public void on2ZoomBigMove(Double pDouble) {
-
     }
-
     public void on2ZoomBigUp(Double pDouble) {
     }
-
-    /***
-     * 缩小
-     * @param pDouble 两次间隔
-     * **/
     public void on2ZoomSmallMove(Double pDouble) {
-
     }
-
     public void on2ZoomSmallUp(Double pDouble) {
-
     }
-
     public void on2TopMove(Float pFloat) {
     }
-
     public void on2BottomMove(Float pFloat) {
     }
-
     public void on2LeftMove(Float pFloat) {
     }
-
     public void on2RightMove(Float pFloat) {
     }
-
     public void on2TopUp(Float pFloat) {
     }
-
     public void on2BottomUp(Float pFloat) {
     }
-
     public void on2LeftUp(Float pFloat) {
     }
-
     public void on2RightUp(Float pFloat) {
     }
 
@@ -165,11 +88,6 @@ public abstract class OnGesture {
      */
     public void on2ZoomBigUp(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Double pDouble) {
     }
-
-    /***
-     * 缩小
-     * @param pDouble 两次间隔
-     * **/
     public void on2ZoomSmallMove(ZGesture.Points pPoints0, ZGesture.Points pPoints1, Double pDouble) {
 
     }
