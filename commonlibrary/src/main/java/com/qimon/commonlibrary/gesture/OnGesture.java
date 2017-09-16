@@ -206,8 +206,12 @@ public abstract class OnGesture {
 
     /***
      * 取消手势，这个等我先想一下。
+     * 移动的时候可以得到当前手指，但抬起就得不到，所以，取消了就取消了，没有了。
+     * 按下两个手指，取消一个手指事件，同理3取2
+     * 应该没有人要取消长按和单双击的回调吧。
+     * @param finger  取消了几个手指的抬起事件
      */
-    public void cancelFinger() {
+    public void cancelFinger(int finger) {
 
     }
 
