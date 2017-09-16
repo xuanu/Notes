@@ -298,7 +298,7 @@ class ZGesture(context: Context, gesture: OnGesture?) {
     }
 
     /**双指，两个坐标点**/
-    private data class Points(var x1: Float, var y1: Float, var x2: Float = 0f, var y2: Float = 0f)
+    data class Points(var x1: Float, var y1: Float, var x2: Float = 0f, var y2: Float = 0f)
 
     /**
      * 计算两坐标点间隔
