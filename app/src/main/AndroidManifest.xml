@@ -23,6 +23,7 @@
         <activity android:name=".memoryleak.MemoryLeakActivity"></activity>
         <activity android:name=".memoryleak.Leak1Activity"></activity>
         <activity android:name=".down.DownActivity"></activity>
+        <activity android:name=".recycler.RecyclerActivity"></activity>
     </application>
 
 </manifest>

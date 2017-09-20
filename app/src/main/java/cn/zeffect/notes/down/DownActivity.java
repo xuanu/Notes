@@ -35,7 +35,7 @@ public class DownActivity extends Activity implements DownListener, View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_down);
-        inputEt = (EditText) findViewById(R.id.input);
+        inputEt = findViewById(R.id.input);
         downBtn = (Button) findViewById(R.id.down);
         showText = (TextView) findViewById(R.id.showText);
         mPauseBtn = (Button) findViewById(R.id.pausedown);
