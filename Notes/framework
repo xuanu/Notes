@@ -1,0 +1,13 @@
+# 从需求出发学习framework  
+
+1. 只能安装指定应用  
+> 只能安装指定包名或指定签名的应用。  
+
+```
+//ADB和手动安装最后都会进入PackageManagerService.java的installPackageLI();
+//方法的最后会选择更新或是安装新包
+replacePackageLIF();
+installNewPackageLIF();
+
+```  
+
